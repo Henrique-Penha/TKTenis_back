@@ -1,14 +1,27 @@
 import 'dotenv/config';
 import express from 'express';
 import UserService from '../src/services/user-service.js';
+import authMiddleware from './middlewares/auth.middleware.js';
 
 const app = express();
 const port = 3000;
 
 app.use(express.json());
+app.use(authMiddleware);
 
 app.get('/', (req, res) => {
     res.send('TKTênis_API');
+});
+
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+    const userService = new UserService();
+    try {
+        const user = await userService.login(email, password);
+        return res.status(200).json({ name: user.name, email: user.email })
+    } catch (error) {
+        return res.status(400).json({ message: error.message })
+    }
 });
 
 //CREATE
@@ -20,7 +33,7 @@ app.post('/users', async (req, res) => {
 });
 
 //READ
-app.get('/users', async (req, res) => {
+app.get('/users/:key', async (req, res) => {
     const userService = new UserService();
     const users = await userService.findAll();
     return res.status(200).json(users);
