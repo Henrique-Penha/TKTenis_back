@@ -24,7 +24,7 @@ app.post('/login', async (req, res) => {
 });
 
 //CREATE
-app.post('/users', async (req, res) => {
+app.post('/users', authMiddleware, async (req, res) => {
     const { name, email, password } = req.body;
     const userService = new UserService();
     await userService.add(name, email, password);
@@ -46,7 +46,7 @@ app.get('/users/:id', authMiddleware, async (req, res) => {
 });
 
 //UPDATE
-app.put('/users/:id', async (req, res) => {
+app.put('/users/:id', authMiddleware, async (req, res) => {
     const id = req.params.id;
     const { name, email, password } = req.body;
     const user = { name, email, password};
@@ -60,7 +60,7 @@ app.put('/users/:id', async (req, res) => {
 });
 
 //DELETE
-app.delete('/users/:id', async (req, res) => {
+app.delete('/users/:id', authMiddleware, async (req, res) => {
     const id = req.params.id;
     const userService = new UserService();
     try {
