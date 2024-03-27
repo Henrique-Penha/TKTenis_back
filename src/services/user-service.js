@@ -19,6 +19,10 @@ export default class UserService {
         return await UserModel.findById(new ObjectId(id));
     }
 
+    async findByEmail(email) {
+        return await UserModel.findOne({ email: email });
+    }
+
     async update(id, user) {
         const findUser = await this.findById(id);
         if (!findUser) throw new Error('Usuário não encontrado');
@@ -29,5 +33,14 @@ export default class UserService {
         const user = await this.findById(id);
         if (!user) throw new Error('Usuário não encontrado');
         return await UserModel.deleteOne({ _id: new ObjectId(id) });
+    }
+
+    async login(email, password) {
+        if(!email && !password) throw new Error('Falha no login');
+        const user = await this.findByEmail(email);
+        if(!user) throw new Error('Usuário não encontrado');
+        const auth = user.password === password;
+        if(!auth) throw new Error('Senha errada');
+        return user;
     }
 };
