@@ -1,4 +1,5 @@
 import { ObjectId } from 'mongodb';
+import jwt from 'jsonwebtoken';
 import UserModel from '../schema/user.schema.js';
 import { error } from 'console';
 
@@ -41,6 +42,8 @@ export default class UserService {
         if(!user) throw new Error('Usuário não encontrado');
         const auth = user.password === password;
         if(!auth) throw new Error('Senha errada');
-        return user;
+        const secretKey = process.env.SECRET_KEY;
+        const token = jwt.sign({ user }, secretKey, { expiresIn: "3600s" });
+        return token;
     }
 };
