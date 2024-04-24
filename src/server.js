@@ -9,7 +9,7 @@ import multer from 'multer';
 import crypto from 'crypto';
 
 const app = express();
-const port = 3000;
+const port = 3333;
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'uploads/');
@@ -56,7 +56,7 @@ app.post('/products', authMiddleware, uploadMiddleware.single('image'), async (r
 });
 
 //READ PRODUCTS
-app.get('/products', authMiddleware, async (req, res) => {
+app.get('/products', async (req, res) => {
     const productService = new ProductService();
     const products = await productService.findAll();
     return res.status(200).json(products);
